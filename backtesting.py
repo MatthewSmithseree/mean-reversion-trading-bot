@@ -12,9 +12,16 @@ def backtest_strategy(data):
     #atrs
     data.loc[data["signal"] == 1, "stoploss_long"] = data["open"] - 1.5 * data["atr"]
     data.loc[data["signal"] == -1, "stoploss_short"] = data["open"] + 1.5 * data["atr"]
-    data.loc[data["high"] > data["stoploss_short"], "position"] = 0
-    data.loc[data["low"] < data["stoploss_long"], "position"] = 0
-             
+    #active trade?
+    ///////
+    I'M STUCK HERE
+    //////
+
+
+    data.loc[(data["high"] > data["stoploss_short"]) & (data["active"] == True), "position"] = 0
+    data.loc[(data["low"] < data["stoploss_long"]) & (data["active"] == True), "position"] = 0
+
+    #calculating return
     data["strategy"] = data["return"] * data["position"]
     data["cumulative_strategy"] = (1 + data["strategy"]).cumprod()
 
