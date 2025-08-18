@@ -25,14 +25,14 @@ def backtest_strategy(data):
             if data.at[i, "position"] == 0:
                 data.at[i, "position"] = data.at[i-1, "signal"]     
                 if data.at[i-1, "signal"] == 1:
-                    #trigger
+                    #check stoploss
                     if data.at[i, "low"] < data.at[i, "stoploss_long"]:
                         data.at[i, "position"] = 0  
                     else:
                         data.at[i, "stoploss_long"] = max(prev_stoploss_long, data.at[i, "close"] - data.at[i, "atr"] * 1.5)
                     prev_stoploss_long = data.at[i, "stoploss_long"] 
                 elif data.at[i-1, "signal"] == -1:
-                    #trigger
+                    #check stoploss
                     if data.at[i, "high"] > data.at[i, "stoploss_short"]:
                         data.at[i, "position"] = 0 
                     else:
@@ -42,6 +42,5 @@ def backtest_strategy(data):
     #calculating return
     data["strategy"] = data["return"] * data["position"]
     data["cumulative_strategy"] = (1 + data["strategy"]).cumprod()
-    
-    return data
 
+    
