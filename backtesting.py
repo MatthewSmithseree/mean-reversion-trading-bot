@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import yfinance as yf
 
+
+
 def backtest_strategy(data):
     #let's try to account for intraday
     data["return"] = (data["close"] - data["open"]) / data["open"]
@@ -43,4 +45,16 @@ def backtest_strategy(data):
     data["strategy"] = data["return"] * data["position"]
     data["cumulative_strategy"] = (1 + data["strategy"]).cumprod()
 
-    
+def generate_atr(data):
+    atr_period = 14
+    high = data["high"]
+    low = data["low"]
+    close = data["close"]
+    tr = pd.concat([
+        high - low, 
+        (low - close.shift(1)).abs(),
+        (high - close.shift(1)).abs()
+    ], axis=1).max(axis=1)
+    data["tr"] = tr
+    data["atr"] = data["tr"].ewm(span = atr_period).mean()        
+    return data
